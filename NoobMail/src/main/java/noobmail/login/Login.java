@@ -16,9 +16,10 @@ public class Login extends HttpServlet{
 		String userId = req.getParameter("id");
 		String userPassword = req.getParameter("password");
 	}
-	
-	private bool compare(String id, String pwd) {
+	/*
+	 * private bool compare(String id, String pwd) {
 		String toCompare = id+pwd;
 		int hash = toCompare.hashCode();
 	}
+	*/
 }

@@ -1,2 +1,11 @@
 경로를 인식할 때 가장 기본으로 잡히는 곳은
 D:\Work\NoobMail\NoobMail 이다.(여기서부터 상대 경로로 잡으면 됨!!)
+
+Java에서 파일을 읽거나 쓰는 경우
+쓰기 : FileOutputStream/ByteArrayOutputStream/BufferedOutputStream
+읽기 : FileInputStream/ByteArrayInputStream/BufferedInputStream
+
+user.txt
+
+authority : 0 = user / 999 = admin
+ID/name/권한/가입날짜시간("dd-MM-yyyy HH:mm:ss")/탈퇴시간("dd-MM-yyyy HH:mm:ss" : 없의면 0)/탈퇴여부(0, 1)

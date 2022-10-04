@@ -16,53 +16,115 @@ import java.util.Calendar;
  * */
 
 public class Account {
+	private String name;
+	private String id;
+	private Integer idToHash;
+	private String pwd;
+	private Integer value;
+	private int authority;
+	
+	private String indexPath;
+	private String mainFolderPath;
 	
 	public Account(String name, String id, String pwd, int authority) throws IOException {
-		create(name, id, pwd, authority);
+		this.name = new String(name);
+		
+		this.id =new String(id);
+		this.idToHash = id.hashCode();
+		
+		this.pwd = new String(pwd);
+		this.value = (id+pwd).hashCode();
+		
+		this.authority = authority;
+		
+		this.indexPath = new String("src\\main\\webapp\\DB\\admin\\account.txt");
+		if(authority == 0) {
+			mainFolderPath = new String("src\\main\\webapp\\DB\\users\\"+idToHash.toString());
+		}else {
+			mainFolderPath = new String("src\\main\\webapp\\DB\\admin\\admins\\"+idToHash.toString());
+		}
+		create();
 	}
 	
-	public void create(String name, String id, String pwd, int authority) throws IOException{
-		if(search(id) == null) {
-			if(authority == 0) {
-				addUserAccountToIndex(id, pwd, authority);
-				addUserAccountToDB(name, id, pwd);
-			}else if(authority == 999) {
-				addUserAccountToIndex(id, pwd, authority);
-				addAdminAccountToDB(name, id, pwd);
-			}
+	//create account
+	public void create() throws IOException{
+		if(search() == null) {
+			addUserAccountToIndex();
+			addAccountToDB();
 		}else {
 			Log.log("Failed to create account(already exists)", "src\\main\\webapp\\DB\\admin\\account.txt");
 		}
 	}
-	
-	public String read(String id) throws IOException {
-		String target = search(id);
-		if(target == null) {
-			return null;
+	//create account(add an account to index)
+	private void addUserAccountToIndex() throws IOException {
+		FileWriter fw = new FileWriter(new File(indexPath), true);
+		
+		if(authority == 0) {
+			fw.write(idToHash.toString()+"/"+value.toString()+"/"+0+"\n");
+			fw.close();
+			Log.log("Created user account", indexPath);
+		}else if(authority == 999) {
+			fw.write(idToHash.toString()+"/"+value.toString()+"/"+999+"\n");
+			fw.close();
+			Log.log("Created admin account", indexPath);
+		}
+	}
+	//create account(add an account to folder)
+	private void addAccountToDB() throws IOException {
+		Calendar calendar = Calendar.getInstance();
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+		
+		//'get' folder store the mails you got
+		File get = new File(mainFolderPath+"\\get");
+		//'post' folder store the mails you wrote
+		File post = new File(mainFolderPath+"\\post");
+		//'garbage' folder store the mails you deleted
+		File garbage = new File(mainFolderPath+"\\garbage");
+		
+		if(get.mkdirs()) {
+			Log.log("Created new folder", mainFolderPath+"\\get");
 		}else {
-			String[] parsed = target.split("/");
-			if(parsed[2].equals("999")) {
-				Integer idToHash = id.hashCode();
-				String path = "src\\main\\webapp\\DB\\users\\"+idToHash.toString();
-				return path;
+			Log.log("Failed to create new folder", mainFolderPath+"\\get");
+		}
+		
+		if(post.mkdirs()) {
+			Log.log("Created new folder", mainFolderPath+"\\post");
+		}else {
+			Log.log("Failed to create new folder", mainFolderPath+"\\post");
+		}
+		
+		if(garbage.mkdirs()) {
+			Log.log("Created new folder", mainFolderPath+"\\garbage");
+			
+			BufferedWriter bw = new BufferedWriter(new FileWriter(mainFolderPath+"\\meta.txt", true));
+			PrintWriter pw = new PrintWriter(bw, true);
+			
+			if(authority == 0) {
+				pw.println(id+"/"+name+"/"+"user"+"/"+formatter.format(calendar.getTime())+"/"+0+"/"+0);
 			}else{
-				Integer idToHash = id.hashCode();
-				String path = "src\\main\\webapp\\DB\\admin\\admins\\"+idToHash.toString();
-				return path;
+				pw.println(id+"/"+name+"/"+"admin"+"/"+formatter.format(calendar.getTime())+"/"+0+"/"+0);
 			}
-		}
-	}
-	
-	public void delete(String id) throws IOException {
-		String toDelete = search(id);
-		if(toDelete.split("/")[2].equals("999")) {
-			deleteDirectory("src\\main\\webapp\\DB\\admin\\admins\\"+toDelete.split("2")[0]);
+			
+			pw.flush();
+			pw.close();
+			
+			Log.log("Created new file", mainFolderPath+"\\meta.txt");
 		}else {
-			deleteDirectory("src\\main\\webapp\\DB\\users\\"+toDelete.split("2")[0]);
+			Log.log("Failed to create new folder", mainFolderPath+"\\garbage");
 		}
-		deleteAcoountFromIndex(id, toDelete);
 	}
 	
+	//read return user main folder
+	public String read() throws IOException {
+		return mainFolderPath;
+	}
+	
+	//delete account
+	public void delete() throws IOException {
+		deleteDirectory(mainFolderPath);
+		deleteAcoountFromIndex();
+	}
+	//delete directory(including sub files and directory)
 	private void deleteDirectory(String dir) {
 		File folder = new File(dir);
 		if(folder.exists()) {
@@ -80,14 +142,14 @@ public class Account {
 		}
 	}
 	
-	private void deleteAcoountFromIndex(String id, String toDelete) throws IOException {
+	private void deleteAcoountFromIndex() throws IOException {
 		BufferedReader br = new BufferedReader(
 				new FileReader("src\\main\\webapp\\DB\\admin\\account.txt")
 				);
 		String updated = "";
 		String buffer;
 		while((buffer = br.readLine())!=null) {
-			if(!buffer.equals(toDelete)) {
+			if(!buffer.equals(idToHash.toString()+"/"+value.toString()+"/"+authority)) {
 				updated+=(buffer + "\n");
 			}
 		}
@@ -97,107 +159,9 @@ public class Account {
 		fw.close();
 	}
 	
-	private void addUserAccountToIndex(String id, String pwd, int authority) throws IOException {
-		FileWriter fw = new FileWriter(new File("src\\main\\webapp\\DB\\admin\\account.txt"), true);
-		
-		Integer key = id.hashCode();
-		String valstr = id+pwd;
-		Integer value = valstr.hashCode();
-		
-		if(authority == 0) {
-			fw.write(key.toString()+"/"+value.toString()+"/"+0+"\n");
-			fw.close();
-			Log.log("Created user account", "src\\main\\webapp\\DB\\admin\\account.txt");
-		}else if(authority == 999) {
-			fw.write(key.toString()+"/"+value.toString()+"/"+999+"\n");
-			fw.close();
-			Log.log("Created admin account", "src\\main\\webapp\\DB\\admin\\account.txt");
-		}
-	}
-	
-	private void addUserAccountToDB(String name, String id, String pwd) throws IOException {
-		Integer idToHash = id.hashCode();
-		String path = "src\\main\\webapp\\DB\\users\\"+idToHash.toString();
-		Calendar calendar = Calendar.getInstance();
-		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-		
-		//'get' folder store the mails you got
-		File get = new File(path+"\\get");
-		//'post' folder store the mails you wrote
-		File post = new File(path+"\\post");
-		//'garbage' folder store the mails you deleted
-		File garbage = new File(path+"\\garbage");
-		
-		if(get.mkdirs()) {
-			Log.log("Created new folder", path+"\\get");
-		}else {
-			Log.log("Failed to create new folder", path+"\\get");
-		}
-		
-		if(post.mkdirs()) {
-			Log.log("Created new folder", path+"\\post");
-		}else {
-			Log.log("Failed to create new folder", path+"\\post");
-		}
-		
-		if(garbage.mkdirs()) {
-			Log.log("Created new folder", path+"\\garbage");
-			
-			BufferedWriter bw = new BufferedWriter(new FileWriter(path+"\\meta.txt", true));
-			PrintWriter pw = new PrintWriter(bw, true);
-			pw.println(id+"/"+name+"/"+"user"+"/"+formatter.format(calendar.getTime())+"/"+0+"/"+0);
-			pw.flush();
-			pw.close();
-			
-			Log.log("Created new file", path+"\\meta.txt");
-		}else {
-			Log.log("Failed to create new folder", path+"\\garbage");
-		}
-	}
-	
-	private void addAdminAccountToDB(String name, String id, String pwd) throws IOException {
-		Integer idToHash = id.hashCode();
-		String path = "src\\main\\webapp\\DB\\admin\\admins\\"+idToHash.toString();
-		Calendar calendar = Calendar.getInstance();
-		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-		
-		//'get' folder store the mails you got
-		File get = new File(path+"\\get");
-		//'post' folder store the mails you wrote
-		File post = new File(path+"\\post");
-		//'garbage' folder store the mails you deleted
-		File garbage = new File(path+"\\garbage");
-				
-		if(get.mkdirs()) {
-			Log.log("Created new folder", path+"\\get");
-		}else {
-			Log.log("Failed to create new folder", path+"\\get");
-			}
-				
-		if(post.mkdirs()) {
-			Log.log("Created new folder", path+"\\post");
-		}else {
-			Log.log("Failed to create new folder", path+"\\post");
-		}
-				
-		if(garbage.mkdirs()) {
-			Log.log("Created new folder", path+"\\garbage");
-					
-			BufferedWriter bw = new BufferedWriter(new FileWriter(path+"\\meta.txt", true));
-			PrintWriter pw = new PrintWriter(bw, true);
-			pw.println(id+"/"+name+"/"+"admin"+"/"+formatter.format(calendar.getTime())+"/"+0+"/"+0);
-			pw.flush();
-			pw.close();
-					
-			Log.log("Created new file", path+"\\meta.txt");
-		}else {
-			Log.log("Failed to create new folder", path+"\\garbage");
-		}
-	}
-	
-	private String search(String id) throws IOException {
+	private String search() throws IOException {
 		BufferedReader account = new BufferedReader(
-				new FileReader("src\\main\\webapp\\DB\\admin\\account.txt")
+				new FileReader(indexPath)
 				);
 		int idToHash = id.hashCode();
 		

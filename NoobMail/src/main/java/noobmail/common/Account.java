@@ -3,16 +3,17 @@ package noobmail.common;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 /*Account : account에 대한 것을 정의해 놓은 가장 기본적인 파일
+ * 파일을 읽거나 쓰거나 하는 것들은 따로 따로 구성할 것이다!!!
+ * 파일을 write하는 기능은 아직 넣지는 않음(상속 받아서 구성할 것)
  * */
 
 public class Account {
@@ -26,6 +27,7 @@ public class Account {
 	private String indexPath;
 	private String mainFolderPath;
 	
+	//for making account
 	public Account(String name, String id, String pwd, int authority) throws IOException {
 		this.name = new String(name);
 		
@@ -43,7 +45,52 @@ public class Account {
 		}else {
 			mainFolderPath = new String("src\\main\\webapp\\DB\\admin\\admins\\"+idToHash.toString());
 		}
-		create();
+	}
+	
+	//for searching account
+	public Account(String id, String pwd) throws IOException {
+		this.id = new String(id);
+		this.idToHash = id.hashCode();
+		
+		this.pwd = new String(pwd);
+		this.value = (id+pwd).hashCode();
+		
+		this.name = new String("John Doe");
+		this.authority = -1;
+		
+		this.indexPath = new String("src\\main\\webapp\\DB\\admin\\account.txt");
+		
+		String str = search();
+		if(str!=null) {
+			String[] parsed = str.split("/");
+			String au = new String(parsed[2]);
+			this.authority = Integer.valueOf(au);
+			
+			BufferedReader br = new BufferedReader(
+					new FileReader(getMetaInfoPath()));
+			String data = br.readLine();
+			String[] ps = data.split("/");
+			br.close();
+			
+			this.name = new String(ps[0]);
+		}
+	}
+	
+	//search account from index file
+	public String search() throws IOException {
+		BufferedReader account = new BufferedReader(
+				new FileReader(indexPath)
+				);
+		String str;
+		while((str = account.readLine())!=null) {
+			if(Integer.parseInt(str.split("/")[0]) == idToHash) {
+				account.close();
+				return str;
+			}
+		}
+		
+		account.close();
+		return null;
 	}
 	
 	//create account
@@ -51,8 +98,6 @@ public class Account {
 		if(search() == null) {
 			addUserAccountToIndex();
 			addAccountToDB();
-		}else {
-			Log.log("Failed to create account(already exists)", "src\\main\\webapp\\DB\\admin\\account.txt");
 		}
 	}
 	//create account(add an account to index)
@@ -71,8 +116,11 @@ public class Account {
 	}
 	//create account(add an account to folder)
 	private void addAccountToDB() throws IOException {
-		Calendar calendar = Calendar.getInstance();
-		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+		LocalDate now = LocalDate.now();              
+		DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalTime nowTime = LocalTime.now();              
+		DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("hh-mm-ss");
+		String time = now.format(formatter1) + "-" + nowTime.format(formatter2);     
 		
 		//'get' folder store the mails you got
 		File get = new File(mainFolderPath+"\\get");
@@ -100,9 +148,9 @@ public class Account {
 			PrintWriter pw = new PrintWriter(bw, true);
 			
 			if(authority == 0) {
-				pw.println(id+"/"+name+"/"+"user"+"/"+formatter.format(calendar.getTime())+"/"+0+"/"+0);
+				pw.println(id+"/"+name+"/"+"user"+"/"+time);
 			}else{
-				pw.println(id+"/"+name+"/"+"admin"+"/"+formatter.format(calendar.getTime())+"/"+0+"/"+0);
+				pw.println(id+"/"+name+"/"+"admin"+"/"+time);
 			}
 			
 			pw.flush();
@@ -114,15 +162,66 @@ public class Account {
 		}
 	}
 	
-	//read return user main folder
-	public String read() throws IOException {
+	//read
+	//return user main folder path
+	public String getMainPath() throws IOException {
 		return mainFolderPath;
 	}
+	//return user get folder path
+	public String getGetPath() throws IOException {
+		return mainFolderPath+"\\get";
+	}
+	//return user post folder path
+	public String getPostPath() throws IOException {
+		return mainFolderPath+"\\post";
+	}
+	//return user garbage folder path
+	public String getGarbagePath() throws IOException {
+		return mainFolderPath+"\\garbage";
+	}
+	//return user garbage folder path
+	public String getMetaInfoPath() throws IOException {
+		return mainFolderPath+"\\meta.txt";
+	}
+	//return user ID
+	public String getID() {
+		return this.id;
+	}
+	//return user authority
+	public String getName() {
+		return this.name;
+	}
+	//return user authority
+	public int getAuthority() {
+		return this.authority;
+	}
 	
+	//delete
 	//delete account
 	public void delete() throws IOException {
+		LocalDate now = LocalDate.now();              
+		DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalTime nowTime = LocalTime.now();              
+		DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("hh-mm-ss");
+		String time = now.format(formatter1) + "-" + nowTime.format(formatter2);
+		
 		deleteDirectory(mainFolderPath);
+		
 		deleteAcoountFromIndex();
+		
+		BufferedWriter bw = new BufferedWriter(new FileWriter("src\\main\\webapp\\DB\\admin"+"\\account_deleted.txt", true));
+		PrintWriter pw = new PrintWriter(bw, true);
+		
+		if(authority == 0) {
+			pw.println(id+"/"+name+"/"+"user"+"/"+time);
+		}else{
+			pw.println(id+"/"+name+"/"+"admin"+"/"+time);
+		}
+		
+		pw.flush();
+		pw.close();
+		
+		Log.log("Deleted an acoount", indexPath+"+"+mainFolderPath);
 	}
 	//delete directory(including sub files and directory)
 	private void deleteDirectory(String dir) {
@@ -141,7 +240,7 @@ public class Account {
 			folder.delete();
 		}
 	}
-	
+	//delete an account from index
 	private void deleteAcoountFromIndex() throws IOException {
 		BufferedReader br = new BufferedReader(
 				new FileReader("src\\main\\webapp\\DB\\admin\\account.txt")
@@ -157,23 +256,5 @@ public class Account {
 		FileWriter fw = new FileWriter("src\\main\\webapp\\DB\\admin\\account.txt");
 		fw.write(updated);
 		fw.close();
-	}
-	
-	private String search() throws IOException {
-		BufferedReader account = new BufferedReader(
-				new FileReader(indexPath)
-				);
-		int idToHash = id.hashCode();
-		
-		String str;
-		while((str = account.readLine())!=null) {
-			if(Integer.parseInt(str.split("/")[0]) == idToHash) {
-				account.close();
-				return str;
-			}
-		}
-		
-		account.close();
-		return null;
 	}
 }

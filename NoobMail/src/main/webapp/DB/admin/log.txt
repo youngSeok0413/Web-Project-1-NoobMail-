@@ -1,29 +1,5 @@
-[SERVER]/Tue Oct 04 00:09:47 KST 2022/Created user account/src\main\webapp\DB\admin\account.txt
-[SERVER]/Tue Oct 04 00:09:47 KST 2022/Created new folder/src\main\webapp\DB\users\111578566\get
-[SERVER]/Tue Oct 04 00:09:47 KST 2022/Created new folder/src\main\webapp\DB\users\111578566\post
-[SERVER]/Tue Oct 04 00:09:47 KST 2022/Created new folder/src\main\webapp\DB\users\111578566\garbage
-[SERVER]/Tue Oct 04 00:09:47 KST 2022/Created new file/src\main\webapp\DB\users\111578566\meta.txt
-[SERVER]/Tue Oct 04 00:09:47 KST 2022/Created user account/src\main\webapp\DB\admin\account.txt
-[SERVER]/Tue Oct 04 00:09:47 KST 2022/Created new folder/src\main\webapp\DB\users\111578567\get
-[SERVER]/Tue Oct 04 00:09:47 KST 2022/Created new folder/src\main\webapp\DB\users\111578567\post
-[SERVER]/Tue Oct 04 00:09:47 KST 2022/Created new folder/src\main\webapp\DB\users\111578567\garbage
-[SERVER]/Tue Oct 04 00:09:47 KST 2022/Created new file/src\main\webapp\DB\users\111578567\meta.txt
-[SERVER]/Tue Oct 04 00:09:47 KST 2022/Created admin account/src\main\webapp\DB\admin\account.txt
-[SERVER]/Tue Oct 04 00:09:47 KST 2022/Created new folder/src\main\webapp\DB\admin\admins\-1422235966\get
-[SERVER]/Tue Oct 04 00:09:47 KST 2022/Created new folder/src\main\webapp\DB\admin\admins\-1422235966\post
-[SERVER]/Tue Oct 04 00:09:47 KST 2022/Created new folder/src\main\webapp\DB\admin\admins\-1422235966\garbage
-[SERVER]/Tue Oct 04 00:09:47 KST 2022/Created new file/src\main\webapp\DB\admin\admins\-1422235966\meta.txt
-[SERVER]/Tue Oct 04 00:09:47 KST 2022/Created admin account/src\main\webapp\DB\admin\account.txt
-[SERVER]/Tue Oct 04 00:09:47 KST 2022/Created new folder/src\main\webapp\DB\admin\admins\-1422235965\get
-[SERVER]/Tue Oct 04 00:09:47 KST 2022/Created new folder/src\main\webapp\DB\admin\admins\-1422235965\post
-[SERVER]/Tue Oct 04 00:09:47 KST 2022/Created new folder/src\main\webapp\DB\admin\admins\-1422235965\garbage
-[SERVER]/Tue Oct 04 00:09:47 KST 2022/Created new file/src\main\webapp\DB\admin\admins\-1422235965\meta.txt
-[SERVER]/Tue Oct 04 00:10:32 KST 2022/Failed to create account(already exists)/src\main\webapp\DB\admin\account.txt
-[SERVER]/Tue Oct 04 00:18:40 KST 2022/Created admin account/src\main\webapp\DB\admin\account.txt
-[SERVER]/Tue Oct 04 00:18:40 KST 2022/Failed to create new folder/src\main\webapp\DB\admin\admins\-1422235965\get
-[SERVER]/Tue Oct 04 00:18:40 KST 2022/Failed to create new folder/src\main\webapp\DB\admin\admins\-1422235965\post
-[SERVER]/Tue Oct 04 00:18:40 KST 2022/Failed to create new folder/src\main\webapp\DB\admin\admins\-1422235965\garbage
-[SERVER]/Tue Oct 04 00:18:40 KST 2022/Created admin account/src\main\webapp\DB\admin\account.txt
-[SERVER]/Tue Oct 04 00:18:40 KST 2022/Failed to create new folder/src\main\webapp\DB\admin\admins\-1422235966\get
-[SERVER]/Tue Oct 04 00:18:40 KST 2022/Failed to create new folder/src\main\webapp\DB\admin\admins\-1422235966\post
-[SERVER]/Tue Oct 04 00:18:40 KST 2022/Failed to create new folder/src\main\webapp\DB\admin\admins\-1422235966\garbage
+[SERVER]/2022-10-05-02-04-30/Created user account/src\main\webapp\DB\admin\account.txt
+[SERVER]/2022-10-05-02-04-30/Created new folder/src\main\webapp\DB\users\111578567\get
+[SERVER]/2022-10-05-02-04-30/Created new folder/src\main\webapp\DB\users\111578567\post
+[SERVER]/2022-10-05-02-04-30/Created new folder/src\main\webapp\DB\users\111578567\garbage
+[SERVER]/2022-10-05-02-04-30/Created new file/src\main\webapp\DB\users\111578567\meta.txt

@@ -8,4 +8,4 @@ Java에서 파일을 읽거나 쓰는 경우
 user.txt
 
 authority : 0 = user / 999 = admin
-ID/name/권한/가입날짜시간("dd-MM-yyyy HH:mm:ss")/탈퇴시간("dd-MM-yyyy HH:mm:ss" : 없의면 0)/탈퇴여부(0, 1)
+ID/name/권한/가입날짜시간("yyyy-MM-dd-hh-mm-ss")

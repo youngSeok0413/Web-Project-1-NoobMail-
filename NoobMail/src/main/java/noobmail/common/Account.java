@@ -16,7 +16,8 @@ import java.time.format.DateTimeFormatter;
  * 파일을 write하는 기능은 아직 넣지는 않음(상속 받아서 구성할 것)
  * */
 
-public class Account {
+
+public class Account{
 	private String name;
 	private String id;
 	private Integer idToHash;
@@ -24,11 +25,15 @@ public class Account {
 	private Integer value;
 	private int authority;
 	
+	private String home;
 	private String indexPath;
 	private String mainFolderPath;
+	private String accountDeletePath;
 	
 	//for making account
-	public Account(String name, String id, String pwd, int authority) throws IOException {
+	public Account(String homeDir, String name, String id, String pwd, int authority) throws IOException {
+		this.home = homeDir;
+		
 		this.name = new String(name);
 		
 		this.id =new String(id);
@@ -39,16 +44,19 @@ public class Account {
 		
 		this.authority = authority;
 		
-		this.indexPath = new String("src\\main\\webapp\\DB\\admin\\account.txt");
+		this.indexPath = new String(home+"DB\\admin\\account.txt");
+		this.accountDeletePath = new String(home+"DB\\admin\\account_deleted.txt");
 		if(authority == 0) {
-			mainFolderPath = new String("src\\main\\webapp\\DB\\users\\"+idToHash.toString());
+			mainFolderPath = new String(home+"DB\\users\\"+idToHash.toString());
 		}else {
-			mainFolderPath = new String("src\\main\\webapp\\DB\\admin\\admins\\"+idToHash.toString());
+			mainFolderPath = new String(home+"DB\\admin\\admins\\"+idToHash.toString());
 		}
 	}
 	
 	//for searching account
-	public Account(String id, String pwd) throws IOException {
+	public Account(String homeDir, String id, String pwd) throws IOException {
+		this.home = homeDir;
+		
 		this.id = new String(id);
 		this.idToHash = id.hashCode();
 		
@@ -58,7 +66,7 @@ public class Account {
 		this.name = new String("John Doe");
 		this.authority = -1;
 		
-		this.indexPath = new String("src\\main\\webapp\\DB\\admin\\account.txt");
+		this.indexPath = new String(home+"DB\\admin\\account.txt");
 		
 		String str = search();
 		if(str!=null) {
@@ -67,7 +75,7 @@ public class Account {
 			this.authority = Integer.valueOf(au);
 			
 			BufferedReader br = new BufferedReader(
-					new FileReader(getMetaInfoPath()));
+					new FileReader(this.indexPath));
 			String data = br.readLine();
 			String[] ps = data.split("/");
 			br.close();
@@ -107,11 +115,11 @@ public class Account {
 		if(authority == 0) {
 			fw.write(idToHash.toString()+"/"+value.toString()+"/"+0+"\n");
 			fw.close();
-			Log.log("Created user account", indexPath);
+			Log.log(home, "Created user account", indexPath);
 		}else if(authority == 999) {
 			fw.write(idToHash.toString()+"/"+value.toString()+"/"+999+"\n");
 			fw.close();
-			Log.log("Created admin account", indexPath);
+			Log.log(home, "Created admin account", indexPath);
 		}
 	}
 	//create account(add an account to folder)
@@ -130,19 +138,19 @@ public class Account {
 		File garbage = new File(mainFolderPath+"\\garbage");
 		
 		if(get.mkdirs()) {
-			Log.log("Created new folder", mainFolderPath+"\\get");
+			Log.log(home, "Created new folder", mainFolderPath+"\\get");
 		}else {
-			Log.log("Failed to create new folder", mainFolderPath+"\\get");
+			Log.log(home, "Failed to create new folder", mainFolderPath+"\\get");
 		}
 		
 		if(post.mkdirs()) {
-			Log.log("Created new folder", mainFolderPath+"\\post");
+			Log.log(home, "Created new folder", mainFolderPath+"\\post");
 		}else {
-			Log.log("Failed to create new folder", mainFolderPath+"\\post");
+			Log.log(home, "Failed to create new folder", mainFolderPath+"\\post");
 		}
 		
 		if(garbage.mkdirs()) {
-			Log.log("Created new folder", mainFolderPath+"\\garbage");
+			Log.log(home, "Created new folder", mainFolderPath+"\\garbage");
 			
 			BufferedWriter bw = new BufferedWriter(new FileWriter(mainFolderPath+"\\meta.txt", true));
 			PrintWriter pw = new PrintWriter(bw, true);
@@ -156,9 +164,9 @@ public class Account {
 			pw.flush();
 			pw.close();
 			
-			Log.log("Created new file", mainFolderPath+"\\meta.txt");
+			Log.log(home, "Created new file", mainFolderPath+"\\meta.txt");
 		}else {
-			Log.log("Failed to create new folder", mainFolderPath+"\\garbage");
+			Log.log(home, "Failed to create new folder", mainFolderPath+"\\garbage");
 		}
 	}
 	
@@ -166,6 +174,10 @@ public class Account {
 	//return user main folder path
 	public String getMainPath() throws IOException {
 		return mainFolderPath;
+	}
+	//return index path
+	public String getIndexPath() throws IOException {
+		return indexPath;
 	}
 	//return user get folder path
 	public String getGetPath() throws IOException {
@@ -209,7 +221,7 @@ public class Account {
 		
 		deleteAcoountFromIndex();
 		
-		BufferedWriter bw = new BufferedWriter(new FileWriter("src\\main\\webapp\\DB\\admin"+"\\account_deleted.txt", true));
+		BufferedWriter bw = new BufferedWriter(new FileWriter(accountDeletePath, true));
 		PrintWriter pw = new PrintWriter(bw, true);
 		
 		if(authority == 0) {
@@ -221,7 +233,7 @@ public class Account {
 		pw.flush();
 		pw.close();
 		
-		Log.log("Deleted an acoount", indexPath+"+"+mainFolderPath);
+		Log.log(home, "Deleted an acoount", indexPath+"+"+mainFolderPath);
 	}
 	//delete directory(including sub files and directory)
 	private void deleteDirectory(String dir) {
@@ -243,7 +255,7 @@ public class Account {
 	//delete an account from index
 	private void deleteAcoountFromIndex() throws IOException {
 		BufferedReader br = new BufferedReader(
-				new FileReader("src\\main\\webapp\\DB\\admin\\account.txt")
+				new FileReader(indexPath)
 				);
 		String updated = "";
 		String buffer;
@@ -253,7 +265,7 @@ public class Account {
 			}
 		}
 		
-		FileWriter fw = new FileWriter("src\\main\\webapp\\DB\\admin\\account.txt");
+		FileWriter fw = new FileWriter(indexPath);
 		fw.write(updated);
 		fw.close();
 	}

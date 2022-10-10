@@ -1,0 +1,52 @@
+@charset "UTF-8";
+
+body{
+	background: #010409;
+}
+
+.layout{
+	margin-top: 80px;
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+.form{
+	text-align: center;
+}
+
+.welcome{
+	 color : white;
+	font-size: 50px;
+}
+
+.hyper{
+	font-size: 30px;
+}
+
+a{
+	color : #05ce5c;
+	text-decoration: none;
+}
+
+a:link{
+	color : #05ce5c;
+	text-decoration: none;
+}
+
+a:visited{
+	color : #05ce5c;
+	text-decoration: none;
+}
+
+a:hover{
+	color : #05ce5c;
+	text-decoration: none;
+}
+
+a:active{
+	color : #05ce5c;
+	text-decoration: none;
+}
+
+

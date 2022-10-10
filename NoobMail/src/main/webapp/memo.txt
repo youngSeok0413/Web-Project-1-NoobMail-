@@ -9,3 +9,9 @@ user.txt
 
 authority : 0 = user / 999 = admin
 ID/name/권한/가입날짜시간("yyyy-MM-dd-hh-mm-ss")
+
+서블릿에서의 파일 입출력
+실제 이클립스의 작업 공간하고 동작하는 서버의 공간하고 다름
+그래서 항상 홈 디렉터리를 우선적으로 넣고선 시작해야 함
+구조는 이렇게 되어 있음
+D:\Work\NoobMail\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\NoobMail\Webapp 폴더에 들어 있는 내용

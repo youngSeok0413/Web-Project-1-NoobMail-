@@ -1,0 +1,47 @@
+@charset "UTF-8";
+
+body{
+	background : #010409;
+	text-align: center;
+	color : #ffffff;
+	line-height: 30px;
+	font-size: 20px;
+};
+
+.layout{
+	margin: auto;
+}
+
+.img{
+	margin: auto;
+}
+
+.form{
+	display: inline-block;
+	text-align: left;
+}
+
+a{
+	color : #05ce5c;
+	text-decoration: none;
+}
+
+a:link{
+	color : #05ce5c;
+	text-decoration: none;
+}
+
+a:visited{
+	color : #05ce5c;
+	text-decoration: none;
+}
+
+a:hover{
+	color : #05ce5c;
+	text-decoration: none;
+}
+
+a:active{
+	color : #05ce5c;
+	text-decoration: none;
+}

@@ -28,6 +28,24 @@
   </description>
   
   <servlet>
+  	<servlet-name>account</servlet-name>
+  	<servlet-class>noobmail.login.CreateAccount.java</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>account</servlet-name>
+  	<url-pattern>/account</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+  	<servlet-name>test</servlet-name>
+  	<servlet-class>noobmail.test</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>test</servlet-name>
+  	<url-pattern>/test</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
   	<servlet-name>login</servlet-name>
   	<servlet-class>noobmail.login.java</servlet-class>
   </servlet>

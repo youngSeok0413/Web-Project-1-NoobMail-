@@ -35,8 +35,8 @@ public class CreateAccount extends HttpServlet{
 		
 		FINDER = new Account(home, "FINDER", "finder1234");
 		
-		if(name!=null&&id!=null
-				&&pwd!=null&&pwdconfi!=null) {
+		if(!name.equals("")&&id.equals("")
+				&&pwd.equals("")&&pwdconfi.equals("")) {
 			if(!whetherIDOverlapped()) {
 				if(pwd.equals(pwdconfi)) {
 					Account newAccount = new Account(home, name, id, pwd, 0);

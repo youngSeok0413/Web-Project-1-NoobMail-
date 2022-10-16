@@ -15,3 +15,10 @@ ID/name/권한/가입날짜시간("yyyy-MM-dd-hh-mm-ss")
 그래서 항상 홈 디렉터리를 우선적으로 넣고선 시작해야 함
 구조는 이렇게 되어 있음
 D:\Work\NoobMail\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\NoobMail\Webapp 폴더에 들어 있는 내용
+
+session.setAttribute("approved", true);
+		session.setAttribute("id", account.getID());
+		session.setAttribute("get", account.getGetPath());
+		session.setAttribute("post", account.getPostPath());
+		session.setAttribute("garbage", account.getGarbagePath());
+		session.setAttribute("type", account.getAuthority());
